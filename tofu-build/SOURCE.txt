@@ -1,0 +1,12 @@
+Inpaint-web: source code of this copy
+=====================================
+
+Inpaint-web is free software, licensed under the GNU General Public License version 3 (see LICENSE.txt in this folder).
+
+This folder is a finished build of Inpaint-web by lxfater (https://github.com/lxfater/inpaint-web), made from upstream
+commit d1b6cfd334dbc53d30675635a80366841c0239f9 with upstream's own commands: npm ci, then npm run fast-build
+(vite build). The program's source code was not changed.
+
+The complete corresponding source of this build, with the commands that made it, is in
+https://github.com/tofu-gallery/inpaint-web on the branch "tofu", at the tag "pin/2026-10-23". TOFU.md there
+explains each step. The licences of the libraries in the JavaScript bundle are in THIRD-PARTY-NOTICES.txt.
