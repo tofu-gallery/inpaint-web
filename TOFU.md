@@ -19,7 +19,7 @@ once and kept in the browser's IndexedDB. The interface opens in Chinese, with a
 | Environment variables | none |
 | Database | none |
 
-`site/` holds 14 files, 9,552,777 bytes. The largest is the JavaScript bundle `assets/index-wKMmwxyL.js` (8.7 MB),
+`site/` holds 14 files, 9,554,347 bytes. The largest is the JavaScript bundle `assets/index-wKMmwxyL.js` (8.7 MB),
 most of which is OpenCV.js.
 
 ### Why the site is prebuilt
@@ -40,10 +40,14 @@ makes it from this branch:
 
 1. `HUSKY=0 npm ci --no-audit --no-fund` (the committed `package-lock.json`; `HUSKY=0` only stops upstream's
    `prepare` script from adding git hooks to the checkout);
-2. `npm run fast-build` (upstream's `vite build`); the bundle in `site/` is this output byte for byte;
+2. `npm run fast-build` (upstream's own script for `vite build`);
 3. a second `vite build --sourcemap` into a temporary folder, used only to list the packages inside the bundle;
 4. `dist/` copied to `site/` without `_headers` (below), plus `LICENSE.txt`, `SOURCE.txt` and
-   `THIRD-PARTY-NOTICES.txt` (written by `tofu-build/make_notices.py`).
+   `THIRD-PARTY-NOTICES.txt` (written by `tofu-build/make_notices.py`);
+5. since 2026-10-24, `tofu-build/add_source_link.py` adds the visible source link and layout styles to
+   `site/index.html`, and the dated About-link comment to the bundle. When applied to the original finished files,
+   it also changes the two About URLs; rebuilding from this branch already gets those URLs from `src/App.tsx`.
+   No dependency install or full build was run for the 2026-10-24 link change.
 
 ### What a visitor gets that differs from upstream's own host
 
@@ -78,15 +82,16 @@ the addresses below. The demo pictures are served from the app's own address.
   model hub, which relays the same Hugging Face files for visitors who cannot reach Hugging Face. It needs no key;
   whether the author pays for it cannot be seen from outside. It is left as upstream ships it; if it goes away, only
   this fallback stops working.
-- A link that opens only when clicked: the upstream GitHub repository, in the "联系作者" (About me) box.
+- Links that open only when clicked: the visible "Source code" link and the two links in the "联系作者" (About me)
+  box all open this fork's matching source tag at `github.com/tofu-gallery/inpaint-web/tree/pin/2026-10-24`.
 
 The models are not in this repository and Tofu hosts none of them: each visitor's browser downloads them, once, and
 keeps them in IndexedDB.
 
 ## What we changed, and why
 
-No upstream file was changed. Every change is a new file on the `tofu` branch, so newer upstream code merges into it
-without conflicts.
+Tofu's changes live in `site/`, `tofu-build/` and this file, plus the two source URLs and dated comment in
+`src/App.tsx` added on 2026-10-24. All other upstream source files remain unchanged.
 
 1. **`site/` added**: the finished site described above. Without it Tofu could not run the app (see *Why the site is
    prebuilt*). It leaves out upstream's `_headers` (see *What a visitor gets*), and adds `LICENSE.txt` (upstream's
@@ -94,14 +99,37 @@ without conflicts.
    as GPL-3.0 asks of anyone who publishes it) and `THIRD-PARTY-NOTICES.txt` (the licences of the libraries inside
    the bundle).
 2. **`tofu-build/` added**: `build-site.sh` rebuilds `site/` from the sources, `make_notices.py` writes the notices
-   from the bundle's source map, `heroicons-v1.0.4-LICENSE.txt` and `opencv-4.5.5-COPYRIGHT.txt` are the two texts it
-   quotes that the npm packages do not ship, and `SOURCE.txt` is the file copied into `site/`.
+   from the bundle's source map, `add_source_link.py` puts the "Source code" link on the page (item 4),
+   `heroicons-v1.0.4-LICENSE.txt` and `opencv-4.5.5-COPYRIGHT.txt` are the two texts it quotes that the npm packages
+   do not ship, and `SOURCE.txt` is the file copied into `site/`.
 3. **`TOFU.md`**: this file.
+4. **Source access, 2026-10-24**: `site/index.html` has a visible "Source code" link in its own row above the app.
+   Small layout styles reserve space for the row and keep app overlays inside `#root`. The two About links in
+   `site/assets/index-wKMmwxyL.js` and `src/App.tsx` now point to the same `pin/2026-10-24` source tag. The finished
+   bundle has only those exact URL replacements and a dated comment; its filename is kept and `index.html` still
+   loads it. `site/SOURCE.txt` and `tofu-build/SOURCE.txt` name the new tag. `tofu-build/add_source_link.py` preserves
+   the changes when `build-site.sh` runs. The HTML, bundle, source component and build script carry dated Tofu
+   comments, as GPL-3.0 section 5 asks. The stylesheet, licences, notices and pictures remain byte-identical.
+   The older tag `pin/2026-10-23` is unchanged.
 
 Upstream commits a `.env` that names `REACT_APP_INPAINTING_ENDPOINT` and `REACT_APP_RECAPTCHA_SITE_KEY` (both set to
 the placeholder `XXXX`) and `GENERATE_SOURCEMAP=false`, left over from an older Create React App setup. Vite hands
 only `VITE_` names to an app, no code reads these, and the file is outside `site/`, so Tofu never uses it: the copy
 needs no secret. Upstream's `Dockerfile` runs Vite's development server; Tofu does not use it either.
+
+## The "Source code" link
+
+The page shows a "Source code" link before JavaScript loads, without a click or sign-in. It opens
+<https://github.com/tofu-gallery/inpaint-web/tree/pin/2026-10-24>, the complete source for this copy, including the
+lockfile, build instructions and Tofu's changes. It opens a new tab so a picture being edited stays open. A normal
+32 px row above the app gives the link its own space; the app's viewport-based height is shortened by the same
+amount, and a positioned `#root` contains the app's absolute overlays. Nothing is fixed over an app control.
+
+If an owner changes the code, they must publish its complete corresponding source and point the visible link,
+the two About links and `SOURCE.txt` at their own matching source tag or commit. Update `URL` in
+`tofu-build/add_source_link.py`, both About URLs in `src/App.tsx`, and `tofu-build/SOURCE.txt` before rebuilding;
+for direct finished-file edits, update `site/index.html`, the two bundle URLs and `site/SOURCE.txt` as well.
+Keep the source link visible, keep the licence notices, and mark changes with a date.
 
 ## Upstream and licence
 
@@ -110,11 +138,12 @@ needs no secret. Upstream's `Dockerfile` runs Vite's development server; Tofu do
 - Licence: GNU General Public License v3.0. `LICENSE` is kept exactly as upstream ships it (the licence text; it
   names no copyright holder), and `site/LICENSE.txt` is a byte-identical copy the site serves.
 - Source offer: the site is the object code of a GPL-3.0 program, so whoever publishes it must offer its complete
-  corresponding source. `site/SOURCE.txt`, served at `/SOURCE.txt`, points to this fork,
-  <https://github.com/tofu-gallery/inpaint-web>, branch `tofu`, tag `pin/2026-10-23`, which holds the full source,
-  the lockfile and the build script. A modified copy must keep offering its own source: keep `LICENSE.txt` and
-  `SOURCE.txt` in the site, point `SOURCE.txt` at the source of the modified version (the copy's own repository,
-  or a later tag of this fork), and mark the changes with a date, as GPL-3.0 section 5 asks.
+  corresponding source. `site/SOURCE.txt`, served at `/SOURCE.txt`, and the page's "Source code" link point to this
+  fork, <https://github.com/tofu-gallery/inpaint-web>, branch `tofu`, tag `pin/2026-10-24`, which holds the full
+  source, the lockfile and the build script. A modified copy must keep offering its own source: keep `LICENSE.txt`
+  and `SOURCE.txt` in the site and the "Source code" link on the page, point both at the source of the modified
+  version (the copy's own repository, or a later tag of this fork), and mark the changes with a date, as GPL-3.0
+  section 5 asks (see *The "Source code" link*).
 - Third-party code inside the bundle: React 17.0.2, react-dom 17.0.2, scheduler 0.20.2 and object-assign 4.1.1
   (MIT), @heroicons/react 1.0.4 (MIT), react-use 17.3.1 (Unlicense), localforage 1.10.0 (Apache-2.0), and opencv-ts
   1.3.6 with OpenCV.js 4.5.5 (Apache-2.0; opencv-ts's `package.json` says MIT, but the LICENSE file it ships is
@@ -131,6 +160,21 @@ needs no secret. Upstream's `Dockerfile` runs Vite's development server; Tofu do
   in the repository and not part of `site/`.
 
 ## Verification
+
+On 2026-10-24 (UTC), for the source-link change, without installing dependencies or rebuilding:
+
+- Served a separate copy of `site/` with `python3 -I -m http.server`, outside the checkout. `curl` confirmed that
+  the HTML contains the visible link with the exact new tag URL, and `/SOURCE.txt` matches the committed notice.
+- Compared the bundle byte for byte: only the two About URLs and a dated comment differ from the earlier pin.
+  The postprocessor reproduces the final HTML and bundle from the earlier finished files, and also handles a
+  bundle whose About URLs already match `src/App.tsx`. `node --check` and `sh -n` passed.
+- Headless Chromium 156 checked home and editor at 10 sizes: 1440x900, 1280x800, 1024x768, 768x1024, 414x896,
+  390x844, 375x667, 360x640, 320x568 and 667x375. The link was visible and hit-testable with no app element
+  overlapping it in all 20 states. No uncaught page errors, console errors or failed requests were recorded.
+  This layout check substituted a small response for the model download; inpainting and upscaling were not rerun.
+- A separate unmocked browser visit also rendered the page and dog editor, and confirmed both About URLs and the
+  visible link while the About box was open. Headless WebGPU logged `Failed to create WebGPU Context Provider`;
+  model inference was not exercised in that visit. Upstream's very short-screen editor still needs scrolling.
 
 On 2026-10-23 (UTC), from this branch, with Node 22.22.3 and npm 10.9.8 on macOS:
 

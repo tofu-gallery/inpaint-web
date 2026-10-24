@@ -22,6 +22,8 @@ cp -R dist/. site/
 rm -f site/_headers
 cp LICENSE site/LICENSE.txt
 cp tofu-build/SOURCE.txt site/SOURCE.txt
+# Tofu, 2026-10-24: retain the visible source link and dated About-link notice in the finished site (see TOFU.md).
+python3 -I tofu-build/add_source_link.py site/index.html
 python3 -I tofu-build/make_notices.py . "$maps" site/THIRD-PARTY-NOTICES.txt \
   tofu-build/heroicons-v1.0.4-LICENSE.txt tofu-build/opencv-4.5.5-COPYRIGHT.txt
 rm -rf "$maps"

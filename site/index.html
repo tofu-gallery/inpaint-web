@@ -10,8 +10,18 @@
 
     <script type="module" crossorigin src="/assets/index-wKMmwxyL.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-WNdPxpJ1.css">
+    <!-- Tofu, 2026-10-24: source access has its own row above the app; see TOFU.md. -->
+    <style>
+      #root { position: relative; height: calc(100vh - 32px); height: calc(100dvh - 32px) }
+      #root main { height: calc(100vh - 88px) !important; height: calc(100dvh - 88px) !important }
+      .tofu-source { display: flex; justify-content: flex-start; min-height: 32px; margin: 0; font-size: 14px; background: #fff }
+      .tofu-source a { display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; color: #2563eb; text-decoration: underline }
+      .tofu-source a:hover { color: #1d4ed8 }
+    </style>
   </head>
   <body class="h-screen">
+    <!-- Tofu, 2026-10-24: complete source of this copy, visible before the app loads. -->
+    <nav class="tofu-source" aria-label="Source code"><a href="https://github.com/tofu-gallery/inpaint-web/tree/pin/2026-10-24" target="_blank" rel="noopener noreferrer">Source code</a></nav>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root" class="h-full"></div>
   

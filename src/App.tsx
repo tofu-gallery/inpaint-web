@@ -1,3 +1,4 @@
+// Tofu, 2026-10-24: About links point to this copy's source at pin/2026-10-24; see TOFU.md.
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { ArrowLeftIcon, InformationCircleIcon } from '@heroicons/react/outline'
@@ -145,7 +146,7 @@ function App() {
               {' '}
               任何问题到:{' '}
               <a
-                href="https://github.com/lxfater/inpaint-web"
+                href="https://github.com/tofu-gallery/inpaint-web/tree/pin/2026-10-24"
                 style={{ color: 'blue' }}
                 rel="noreferrer"
                 target="_blank"
@@ -158,7 +159,7 @@ function App() {
               {' '}
               For any questions, please go to:{' '}
               <a
-                href="https://github.com/lxfater/inpaint-web"
+                href="https://github.com/tofu-gallery/inpaint-web/tree/pin/2026-10-24"
                 style={{ color: 'blue' }}
                 rel="noreferrer"
                 target="_blank"
